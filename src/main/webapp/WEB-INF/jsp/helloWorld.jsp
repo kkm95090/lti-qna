@@ -6,7 +6,7 @@
     <title>LTI Launch Example</title>
 </head>
 <body>
-    <h1>Hello, ${username}</h1>
+    <h1>Hello, ${username}</h1><button>aaaa</button>
     <p>If you are seeing this page, it means that this simple example application
        is running correctly. The OAuth signature on the <code>POST</code> from your
        browser has been authenticated and the application can now go about its
