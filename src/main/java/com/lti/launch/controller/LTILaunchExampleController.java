@@ -1,8 +1,11 @@
 package com.lti.launch.controller;
 
+import com.lti.launch.domain.QnaVO;
+import com.lti.launch.service.QnaService;
 import edu.ksu.lti.launch.controller.LtiLaunchController;
 import edu.ksu.lti.launch.controller.OauthController;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
+import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import org.apache.log4j.Logger;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("request")
@@ -22,6 +27,7 @@ public class LTILaunchExampleController extends LtiLaunchController {
 
     @Autowired
     public LtiSessionService ltiSessionService;
+    public QnaService QnaService;
 
     /**
      * We have our applications return the LTI configuration XML when you hit
@@ -37,16 +43,30 @@ public class LTILaunchExampleController extends LtiLaunchController {
         return new ModelAndView("ltiConfigure", "url", ltiLaunchUrl);
     }
 
+	/*
+	 * @RequestMapping("/helloWorld") public ModelAndView showButton() throws
+	 * NoLtiSessionException { LtiSession ltiSession =
+	 * ltiSessionService.getLtiSession(); if (ltiSession.getEid() == null ||
+	 * ltiSession.getEid().isEmpty()) { throw new
+	 * AccessDeniedException("You cannot access this content without a valid session"
+	 * ); } return new ModelAndView("helloWorld", "username", ltiSession.getEid());
+	 * }
+	 */
+
     @RequestMapping("/helloWorld")
-    public ModelAndView showButton() throws NoLtiSessionException {
+    public ModelAndView helloWorld(HttpServletRequest request) throws Exception {
+        LOG.info("Showing Activity Reporting configuration XML");
+        String ltiLaunchUrl = OauthController.getApplicationBaseUrl(request, true) + "/launch";
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
             throw new AccessDeniedException("You cannot access this content without a valid session");
         }
+        List<QnaVO> list = QnaService.selectQnaList();
+        LOG.debug("LTI launch URL: " + ltiLaunchUrl);
         return new ModelAndView("helloWorld", "username", ltiSession.getEid());
-    }
 
-    /**
+    }
+    /*
      * After authenticating the LTI launch request, the user is forwarded to
      * this path. It is the initial page your user will see in their browser.
      */

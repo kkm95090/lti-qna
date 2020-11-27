@@ -16,8 +16,9 @@
     <li>Copy and paste XML configuration listed below</li>
     <li>Submit the form</li>
     <li>Get back to the home page of the course. There should now be a link in the left navigation menu with the text "LTI Launch Example"</li>
+    <li><a href="/helloWorld">go helloWorld</a></li>
 </ol>
-
+<a href="/helloWorld">go helloWorld</a>
     <pre>
 ----------- Start copying the next line -----------
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
