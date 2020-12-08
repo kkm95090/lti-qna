@@ -6,16 +6,20 @@ import edu.ksu.lti.launch.service.ConfigService;
 import edu.ksu.lti.launch.service.LtiLaunchKeyService;
 import edu.ksu.lti.launch.service.OauthTokenService;
 import org.apache.catalina.filters.HttpHeaderSecurityFilter;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 import javax.servlet.DispatcherType;
+import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan({"com.lti.launch", "edu.ksu.lti.launch"})
@@ -68,4 +72,13 @@ public class AppConfig{
         return registration;
     }
 
+
+    @Bean
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource);
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        sessionFactory.setMapperLocations(resolver.getResources("classpath:com/lti/launch/db/mybatis/mapper/postgresql/*.xml"));
+        return sessionFactory.getObject();
+    }
 }
