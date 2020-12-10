@@ -1,0 +1,169 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+span, a, li, p, dl, dt, dd, table, th, td, strong, h1, h2, h3, h4, h5, button, label, b {transform: skew(-0.1deg);}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+html body * { font-family: 'NanumSquare', sans-serif; }
+.normal     { font-weight: 400 }
+.bold       { font-weight: 700 }
+.bolder     { font-weight: 800 }
+.light      { font-weight: 300 }
+
+
+
+
+
+
+
+/* QnA */
+
+#QnA .wrapper {max-width:1200px; box-sizing: border-box; padding: 0 10px; margin:0 auto; width:100%;}
+#QnA .qna-top {overflow: hidden; padding: 20px 0; border-bottom: 1px solid #ddd; margin-bottom: 20px;}
+#QnA .qna-top select {padding: 5px 10px; border: 1px solid #ddd; height: 45px;}
+#QnA .qna-top select option {font-size: 16px;}
+#QnA .qna-search {position:relative; margin-bottom:20px;}
+#QnA .qna-search input[type="search"] {border:1px solid #ddd; padding:5px 10px; height:45px; width:100%;}
+#QnA .qna-search button.search-btn {background-color: transparent; border:none; outline: none; margin-left:-40px; position:absolute; top:11px; right:5px;}
+
+#QnA .qna-top button.write-btn {float:right; background-color: #4A90E2; color: #fff; cursor: pointer; padding: 3px 15px; height: 45px; border: 1px solid #ddd;}
+
+
+#QnA .qna-list {}
+#QnA .qna-list li {background-color: #f3f3f3;}
+#QnA .qna-list li .uk-accordion-title {border-bottom:1px solid #ddd; padding:20px 15px; background-color:#fff; font-size:18px;}
+/*#QnA .qna-list li .uk-accordion-title label {display:inline-block; z-index:1; position:absolute; left:10px; top:25px;}*/
+#QnA .qna-list li .uk-accordion-title .user-profile {width:30px; height:30px; border-radius:50%; overflow:hidden; display:inline-block; border:1px solid #333; vertical-align: middle; margin-right: 15px;}
+#QnA .qna-list li .uk-accordion-title::before {float: right;}
+#QnA .qna-list li .amend-delete {overflow:hidden; border-bottom: 1px solid #ddd; padding-bottom:10px;}
+#QnA .qna-list li .amend-delete a {float: right; margin-left:20px;}
+#QnA .qna-list li .delete-btn {}
+#QnA .qna-list li .amend-btn {}
+#QnA .qna-list li .uk-accordion-content {margin:0; padding:30px;}
+#QnA .qna-list li .uk-accordion-content .question-content {}
+#QnA .qna-list li .uk-accordion-content .question-content .qna-cont {line-height:2; padding:40px 0; border-bottom:1px solid #ddd; color: #000;}
+#QnA .qna-list li .uk-accordion-content .question-content .file {padding:25px 0;}
+#QnA .qna-list li .uk-accordion-content .question-content .file a {}
+#QnA .qna-list li .uk-accordion-content .comment-wrap {overflow:hidden;}
+#QnA .qna-list li .uk-accordion-content .comment-wrap input {width:90%; box-sizing: border-box; height:45px; border:1px solid #ddd; padding:0 10px; display:inline-block; float:left; outline: none;}
+#QnA .qna-list li .uk-accordion-content .comment-wrap button {width:10%; display:inline-block; box-sizing: border-box; background-color: #4A90E2; color: #fff; cursor: pointer; padding: 3px 15px; height: 45px; border: 1px solid #ddd;}
+
+#QnA .qna-list li .uk-accordion-content .comment-list {margin-top:30px; overflow:hidden; background-color: #fff; border-radius:5px; padding:10px;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-box {width:80%; display:inline-block; float:left;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-box .user-profile {vertical-align: middle; display:inline-block; text-align: center; float:left; width: 10%;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-box .user-profile .profile-img {overflow:hidden; display:inline-block; width:30px; height:30px; border:1px solid #333; line-height:40px; vertical-align: middle; border-radius: 50%;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-box .user-profile .id-level {margin-top:10px; display:inline-block; font-weight:bold;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-box .commnet-text {padding-left: 20px; display:inline-block; float:left; box-sizing: border-box; width:85%;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-box .commnet-text span {line-height:2; color:#000;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-amend {display:inline-block; width:20%; text-align:right;}
+#QnA .qna-list li .uk-accordion-content .comment-list .comment-amend a {margin-left: 20px; float:right;}
+#QnA .paging {}
+#QnA .paging ul {text-align:center; margin-top:40px;}
+#QnA .paging ul li {margin:0 5px; display:inline-block;}
+#QnA .paging ul li a {display: inline-block; color:#000; text-decoration: none;}
+#QnA .paging ul li .active {background-color:#4A90E2; color:#fff; width:20px; height:20px; line-height:20px; border-radius:50%;}
+
+#quesrion-write-modal .uk-modal-dialog .uk-close {right:15px; left:inherit;}
+#quesrion-write-modal .uk-modal-body {}
+#quesrion-write-modal .uk-modal-body input[type="text"] {box-sizing: border-box; padding:5px 10px; height:45px; width:100%; border:1px solid #ddd;}
+#quesrion-write-modal .uk-modal-body div {}
+#quesrion-write-modal .uk-modal-body div textarea {width:100%; resize: none; height:300px; outline: none; border:1px solid #ddd; box-sizing: border-box; margin-top: 20px;}
+#quesrion-write-modal .uk-modal-body .qw-bottom {}
+#quesrion-write-modal .uk-modal-body .qw-bottom p {margin-top:20px;}
+#quesrion-write-modal .uk-modal-body .qw-bottom p input {}
+#quesrion-write-modal .uk-modal-body .qw-bottom label {}
+#quesrion-write-modal .uk-modal-body .qw-bottom label input[type="checkbox"] {margin-top: 10px;}
+/* //QnA */
+
+@media all and (max-width: 767px)
+{
+    #QnA .qna-list li .uk-accordion-content .comment-wrap input {width: 75%;}
+    #QnA .qna-list li .uk-accordion-content .comment-wrap button{width: 25%;}
+    #QnA .qna-list li .uk-accordion-title {text-align: center;}
+    #QnA .qna-list li .uk-accordion-content .comment-list .comment-box {width: 100%;}
+    #QnA .qna-list li .uk-accordion-content .comment-list .comment-amend {width:100%;}
+    #QnA .qna-list li .uk-accordion-content .comment-list .comment-box .user-profile {width:100%;}
+    #QnA .qna-list li .uk-accordion-content .comment-list .comment-box .commnet-text {width:100%; padding:0; margin-top:10px;}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
