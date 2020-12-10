@@ -34,22 +34,46 @@
         from content_tags where context_module_id = #{contextModuleID}
         order by position
     </select>
-    <select id="qnaTotalCount" resultType="int">
-        select count(*) from qna
-    </select>
-    <select id="findQnaAll"   resultType="com.lti.launch.db.mybatis.dto.QnaDTO">
-       select * from (
-                  select ROW_NUMBER() over () AS RN, X.*
-                  from (select a.*,
-                               (
-                                   select b.name
-                                   from users b
-                                   where a.qna_account_id = b.id) AS qna_name
-                        from qna AS a
-                        where a.qna_delete_YN = 'N'
-                        order by qna_no) AS X
-              ) Z where RN between #{start} and #{end}
-    </select>
+<!--    <select id="qnaTotalCount" resultType="int">-->
+<!--        select count(*) from board.qna-->
+<!--    </select>-->
+<!--    <select id="findQnaAll"   resultType="com.lti.launch.db.mybatis.dto.QnaDTO">-->
+<!--       select * from (-->
+<!--                  select ROW_NUMBER() over () AS RN, X.*-->
+<!--                  from (select a.*,-->
+<!--                               (-->
+<!--                                   select b.name-->
+<!--                                   from users b-->
+<!--                                   where a.qna_account_id = b.id) AS qna_name-->
+<!--                        from board.qna AS a-->
+<!--                        where a.qna_delete_YN = 'N'-->
+<!--                        order by qna_no) AS X-->
+<!--              ) Z where RN between #{start} and #{end}-->
+<!--    </select>-->
+
+<!--    <select id="insertQna" parameterType="com.lti.launch.db.mybatis.dto.QnaDTO" resultType="Long">-->
+<!--        insert into board.qna-->
+<!--        (qna_course_id,-->
+<!--        qna_title,-->
+<!--        qna_contents,-->
+<!--        qna_user_id,-->
+<!--        qna_secret,-->
+<!--        qna_attach_id,-->
+<!--        qna_insert_date,-->
+<!--        qna_update_date-->
+<!--        ) VALUES (-->
+<!--        #{qna_course_id}-->
+<!--        ,#{qna_title}-->
+<!--        ,#{qna_contents}-->
+<!--        ,#{qna_user_id}-->
+<!--        ,#{qna_secret}-->
+<!--        ,#{qna_attach_id}-->
+<!--        ,#{qna_insert_date}-->
+<!--        ,#{qna_update_date}-->
+<!--        ) returning id-->
+
+<!--    </select>-->
+
 
 
 </mapper>

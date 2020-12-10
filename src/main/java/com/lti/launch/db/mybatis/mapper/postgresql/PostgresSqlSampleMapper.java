@@ -9,6 +9,8 @@ import java.util.Map;
 @PostgresSqlConnMapper
 public interface PostgresSqlSampleMapper {
 
+
+
     public List<Map<String, String>> findAll();
 
     public CourseDTO findCourseByID(@Param("id") long id);
@@ -17,7 +19,11 @@ public interface PostgresSqlSampleMapper {
                                                                               @Param("contextType") String contextType);
     public List<ContentTagDTO> findContextTagByContextModuleID(@Param("contextModuleID") long contextModuleID);
 
-    public List<QnaDTO> findQnaAll(PagingDTO paging);
+    public List<QnaDTO> findQnaAll();
 
-    public int qnaTotalCount();
+//    public int qnaTotalCount();
+
+    public Long insertQna(QnaDTO dto);
+
+
 }

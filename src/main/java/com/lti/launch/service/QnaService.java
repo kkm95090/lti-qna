@@ -3,6 +3,7 @@ package com.lti.launch.service;
 
 import com.lti.launch.db.mybatis.dto.*;
 import com.lti.launch.model.define.ContextType;
+import com.lti.launch.model.request.ReqQna;
 import com.lti.launch.model.view.CourseModules;
 import com.lti.launch.model.view.Module;
 import com.lti.launch.db.mybatis.mapper.postgresql.PostgresSqlSampleMapper;
@@ -10,10 +11,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class QnaService {
@@ -72,15 +73,46 @@ public class QnaService {
     }
 
 
-    public List<QnaDTO> QnaSelectList(PagingDTO paging) {
-        LOG.info("Service"+paging);
-        List<QnaDTO>  qnalist = postgresSqlSampleMapper.findQnaAll(paging);
+    public List<QnaDTO> QnaSelectList() {
+        List<QnaDTO>  qnalist = postgresSqlSampleMapper.findQnaAll();
             return qnalist;
     };
 
-    public int qnaTotalCount() {
-       return postgresSqlSampleMapper.qnaTotalCount();
-    };
+//    public int qnaTotalCount() {
+//       return postgresSqlSampleMapper.qnaTotalCount();
+//    };
 
 
+    public boolean insertQna(ReqQna req){
+        boolean retVal = true;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String today = null;
+        today = formatter.format(cal.getTime());
+        Timestamp ts = Timestamp.valueOf(today);
+
+
+        File file = new File(req.getAttachFile());
+
+        if(file.exists()){
+            System.out.println("file find");
+        }else{
+            System.out.println("file not found");
+        }
+
+        QnaDTO dto = QnaDTO.builder()
+                .qna_course_id(req.getCourseId())
+                .qna_user_id(req.getUserId())
+                .qna_title(req.getQnaTitle())
+                .qna_contents(req.getQnaContents())
+                .qna_secret(req.getSecret())
+                .qna_insert_date(ts)
+                .qna_update_date(ts)
+                .build();
+        Long qnaId = postgresSqlSampleMapper.insertQna(dto);
+        if(qnaId.longValue() <= 0 )retVal = false;
+
+        return retVal;
+    }
 }

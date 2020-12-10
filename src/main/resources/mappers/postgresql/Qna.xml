@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lti.launch.db.mybatis.mapper.postgresql.PostgresSqlSampleMapper">
+
+    <select id="findQnaAll" resultType="com.lti.launch.db.mybatis.dto.QnaDTO">
+select a.* ,
+        (select b.name
+        from users b
+        where a.qna_account_id = b.id) AS qna_name
+            from board.qna AS a
+            where a.qna_delete_YN = 'N'
+            order by qna_no
+    </select>
+</mapper>

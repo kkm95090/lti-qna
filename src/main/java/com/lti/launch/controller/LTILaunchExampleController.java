@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -58,45 +59,47 @@ public class LTILaunchExampleController extends LtiLaunchController {
 	 */
 
     @RequestMapping("/helloWorld")
-    public ModelAndView helloWorld(@ModelAttribute LtiLaunchData ltiData,HttpServletRequest request
+    public ModelAndView helloWorld(HttpServletRequest request
             , @RequestParam(value="nowPage", required=false)String nowPage
             , @RequestParam(value="cntPerPage", required=false)String cntPerPage) throws Exception {
         LOG.info("Showing Activity Reporting configuration XML");
         LOG.info("nowPage"+nowPage);
         LOG.info("cntPerPage"+cntPerPage);
         String ltiLaunchUrl = OauthController.getApplicationBaseUrl(request, true) + "/launch";
+//        LtiSession ltiSession = null;
+//        if (ltiSessionService == null) {
+//            ltiSession = new LtiSession();
+//            ltiSession.setCanvasCourseId("1");
+//        } else {
+//            ltiSession = ltiSessionService.getLtiSession();
+//            LOG.info("ltiSession"+ltiSession);
+//        }
+//
+//        if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
+//            throw new AccessDeniedException("You cannot access this content without a valid session");
+//        }
+//
+//        LtiLaunchData ltiLaunchData=ltiSession.getLtiLaunchData();
 
-        LtiSession ltiSession = ltiSessionService.getLtiSession();
-        LOG.info("ltiSession"+ltiSession);
-        if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
-            throw new AccessDeniedException("You cannot access this content without a valid session");
-        }
+        //CourseModules courseModules = qnaService.selectModule(Long.parseLong(ltiSession.getCanvasCourseId()));
 
-        LtiLaunchData ltiLaunchData=ltiSession.getLtiLaunchData();
-
-        CourseModules courseModules = qnaService.selectModule(Long.parseLong(ltiLaunchData.getCustom_canvas_course_id()));
-
-        int total = qnaService.qnaTotalCount();
-        if (nowPage == null && cntPerPage == null) {
-            nowPage = "1";
-            cntPerPage = "5";
-        } else if (nowPage == null) {
-            nowPage = "1";
-        } else if (cntPerPage == null) {
-            cntPerPage = "5";
-        }
-        PagingDTO paging = new PagingDTO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-        LOG.info("Controller"+paging);
-        List<QnaDTO> qna = qnaService.QnaSelectList(paging);
+        CourseModules courseModules = qnaService.selectModule(1);
 
 
-        ModelAndView view = new ModelAndView("helloWorld", "ltiLaunchData",ltiLaunchData);
 
-        view.addObject("paging", paging);
-        view.addObject("qna", qna);
+        ModelAndView view = new ModelAndView("qnaList");
+
+//        view.addObject("paging", paging);
+//        view.addObject("qna", qna);
 
         return  view;
 
+    }
+
+    @RequestMapping("/qnaList")
+    public ModelAndView qnaList() throws Exception {
+        ModelAndView view = new ModelAndView("qnaList");
+        return view;
     }
     /*
      * After authenticating the LTI launch request, the user is forwarded to
@@ -104,7 +107,7 @@ public class LTILaunchExampleController extends LtiLaunchController {
      */
     @Override
     protected String getInitialViewPath() {
-        return "/helloWorld";
+        return "qnaList";
     }
 
     @Override
