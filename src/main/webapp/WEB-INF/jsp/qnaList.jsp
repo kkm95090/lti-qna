@@ -31,7 +31,7 @@
                 <option value="">검색조건</option>
             </select>
 
-            <button class="write-btn" type="button" @:click="qnaWriteModal">+ 글쓰기</button>
+            <button class="write-btn" type="button" @click="qnaWriteModal">+ 글쓰기</button>
 
         </div>
 
@@ -42,15 +42,16 @@
 
         <ul class="qna-list" uk-accordion="multiple: true" v-for="(qna, index) in qnaModules">
             <li>
+
                 <a class="uk-accordion-title" href="#">
                     <span class="user-profile"><img src="../img/component.png" alt=""></span>
-                    {{qna.qna_title}}
+                    &nbsp;&nbsp;{{qna.qna_title}}
                     <p>{{qna.qna_name}}</p>
                 </a>
                 <div class="uk-accordion-content">
-                    <div class="amend-delete">
-                        <a class="amend-btn" uk-icon="pencil" href="#"></a>
-                        <a class="delete-btn" uk-icon="trash" href="#"></a>
+                    <div v-if="qna.qna_user_id == userId " class="amend-delete">
+                        <a class="amend-btn" uk-icon="pencil" @click="getEdit(qna.qna_no)"></a>
+                        <a class="delete-btn" uk-icon="trash" @click="putQnaDelete(qna.qna_no)"></a>
                     </div>
                     <div class="question-content">
                         <p class="qna-cont">
@@ -80,7 +81,7 @@
 										</span>
 									</span>
                         </div>
-                        <div class="comment-amend">
+                        <div  class="comment-amend">
                             <a class="amend-btn" uk-icon="pencil" href="#"></a>
                             <a class="delete-btn" uk-icon="trash" href="#"></a>
                         </div>
@@ -89,14 +90,24 @@
             </li>
         </ul>
 
-        <div class="paging">
-            <ul>
-                <li><a href="#" uk-icon="chevron-left"></a></li>
-                <li><a class="active" href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#" uk-icon="chevron-right"></a></li>
-            </ul>
-        </div>
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            <li>
+                <a type="button" v-on:click="getQnaList(page-1)"><span uk-pagination-previous></span></a>
+            </li>
+            <li v-for=" n in parseInt(pageCnt)" :class="{ 'uk-active' : (n == page) }">
+                <a type="button" v-on:click="getQnaList(n)">{{n}}</a>
+            </li>
+            <li>
+                <a type="button" v-on:click="getQnaList(page+1)"><span uk-pagination-next></span></a>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <input type="text" v-model="courseId">
+                <input type="text" v-model="userId">
+                <input type="text" v-model="roleName">
+            </li>
+        </ul>
     </div>
     <%@include file="qnaCreate.jsp"%>
 </div>
@@ -113,26 +124,147 @@
             userId:'${userId}',
             roleName:'${roleName}',
             qnaModules:[],
+            newQna:{
+                qnaTitle:'',
+                qnaContents: '',
+                qnaSecret:'',
+            },
+            qnaNo:0,
+            page:1,
+            size:5,
+            pageCnt:1,
+            cnt:0
+
         },
         created(){
           this.qnaList();
         },
         methods:{
             qnaList(){
-                axios.get(this.baseUrl+'/api/qnaListAll',{
 
+                axios.get(this.baseUrl + '/api/qnaListAll', {
+                    params:{
+                        page:this.page,
+                        size:this.size
+                    }
                 }).then(res => {
-                    console.log(res.data);
-                    this.qnaModules = res.data.data;
+                    this.cnt = res.data.cnt
+                    this.qnaModules = res.data.qna;
+                    if (this.cnt > 0) {
+                        this.pageCnt = this.cnt / this.size;
+                        if ((this.cnt % this.size) > 0) {
+                            this.pageCnt += 1
+                        }
 
-
+                    } else {
+                        this.page = 1;
+                        this.pageCnt = 1;
+                        this.cnt = 0
+                    }
                 })
+
             },
             qnaWriteModal(){
                console.log("글쓰기 modal");
                 var modal = UIkit.modal("#quesrion-write-modal");
                 modal.show();
-            }
+            },
+            createQna(){
+                console.log("질문등록");
+                if (this.isEmpty(this.newQna.qnaTitle)) {
+                    UIkit.notification("Qna 제목은 필수 입니다.");
+                }else if (this.isEmpty(this.newQna.qnaContents)) {
+                    UIkit.notification("Qna 내용은 필수 입니다.");
+                } else {
+                    console.log("등록 시작")
+                    axios.post(this.baseUrl+'/api/qnaCreate',{
+                        qnaTitle : this.newQna.qnaTitle,
+                        qnaContents: this.newQna.qnaContents,
+                        secret: this.newQna.qnaSecret,
+                        courseId: this.courseId,
+                        userId: this.userId
+                    }).then(res => {
+                        console.log("등록 성공!"+res.data);
+
+                        var modal = UIkit.modal("#quesrion-write-modal");
+                        modal.hide();
+
+                        this.qnaList();
+
+                    })
+
+                }
+            },
+            getQnaList(p){
+                if (p == -1) {
+                    p = 1;
+                }
+                if ( 0 < p && p <= this.pageCnt) {
+                    this.page = p;
+                    axios.get(this.baseUrl + '/api/qnaListAll', {
+                        params:{
+                            page: this.page,
+                            size: this.size
+                        }
+                    }).then(res => {
+                        this.qnaModules = res.data.qna;
+                        this.cnt = res.data.cnt;
+                        if (this.cnt > 0) {
+                            this.pageCnt = this.cnt / this.size;
+                            if ((this.cnt % this.size) > 0) {
+                                this.pageCnt += 1
+                            }
+
+                        } else {
+                            this.page = 1;
+                            this.pageCnt = 1;
+                            this.cnt = 0
+                        }
+
+                    })
+                }
+            },
+            putQnaDelete(id){
+                if(confirm('삭제하시겠습니까??')) {
+                    console.log(id);
+                    this.qnaNo=id;
+                    console.log(this.qnaNo);
+                    axios.put(this.baseUrl+ '/api/qnaDelete', {
+                            qnaNo: this.qnaNo
+                    }).then(res => {
+                        console.log(res.data);
+                        this.goQnaList();
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                    });
+
+                }
+
+            },
+            goQnaList(){
+                var linkPath = this.canvasUrl + "/courses/" + this.selectedCourseId+"/external_tools/"+this.ltiId;
+                top.location= linkPath;
+            },
+
+            isEmpty(value){
+                // debug('value', value)
+                // debug('typeof value', typeof value)
+                // debug('Object.keys(value).length', value && Object.keys(value).length)
+                // debug('Object.getOwnPropertyNames()', value && Object.getOwnPropertyNames(value))
+                // debug('value.constructor.name', value && value.constructor && value.constructor.name)
+
+                if (value === null) return true
+                if (typeof value === 'undefined') return true
+                if (typeof value === 'string' && value === '') return true
+                if (Array.isArray(value) && value.length < 1) return true
+                if (typeof value === 'object' && value.constructor.name === 'Object' && Object.keys(value).length < 1 && Object.getOwnPropertyNames(value) < 1) return true
+
+                if (typeof value === 'object' && value.constructor.name === 'String' && Object.keys(value).length < 1) return true // new String()
+
+                // debug('isEmpty false')
+                return false
+            },
 
         }
     })

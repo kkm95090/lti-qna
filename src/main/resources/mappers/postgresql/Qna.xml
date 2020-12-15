@@ -4,13 +4,48 @@
 
 <mapper namespace="com.lti.launch.db.mybatis.mapper.postgresql.PostgresSqlSampleMapper">
 
-    <select id="findQnaAll" resultType="com.lti.launch.db.mybatis.dto.QnaDTO">
+    <select id="qnaListAll" resultType="com.lti.launch.db.mybatis.dto.QnaDTO">
 select a.* ,
         (select b.name
         from users b
-        where a.qna_account_id = b.id) AS qna_name
+        where a.qna_user_id = b.id) AS qna_name
             from board.qna AS a
-            where a.qna_delete_YN = 'N'
-            order by qna_no
+            where a.qna_delete_yn = 'N'
+            order by qna_no DESC
+            LIMIT #{size} OFFSET #{offset}
     </select>
+
+    <select id="qnaListAllCnt" resultType="Integer">
+        select count(1) from board.qna where qna_delete_yn='N'
+    </select>
+
+        <select id="insertQna" parameterType="com.lti.launch.db.mybatis.dto.QnaDTO" resultType="Long">
+            insert into board.qna
+            (qna_course_id,
+            qna_title,
+            qna_contents,
+            qna_user_id,
+            qna_secret,
+            qna_attach_id,
+            qna_insert_date,
+            qna_update_date
+            ) VALUES (
+            #{qna_course_id}
+            ,#{qna_title}
+            ,#{qna_contents}
+            ,#{qna_user_id}
+            ,#{qna_secret}
+            ,#{qna_attach_id}
+            ,#{qna_insert_date}
+            ,#{qna_update_date}
+            ) returning qna_no
+
+        </select>
+
+        <update id="deleteqna">
+            UPDATE board.qna
+            SET qna_delete_yn = 'Y'
+            , qna_update_date = #{qna_update_date}
+            WHERE qna_no = #{qna_no}
+        </update>
 </mapper>

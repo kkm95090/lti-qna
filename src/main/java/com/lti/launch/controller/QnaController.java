@@ -5,17 +5,13 @@ import com.lti.launch.db.mybatis.dto.QnaDTO;
 import com.lti.launch.domain.BaseResult;
 import com.lti.launch.domain.BaseResultFactory;
 import com.lti.launch.model.request.ReqQna;
+import com.lti.launch.model.view.Qna;
 import com.lti.launch.service.QnaService;
-import com.sun.prism.impl.BaseResourceFactory;
-import edu.ksu.lti.launch.model.LtiLaunchData;
+import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import io.swagger.annotations.ApiParam;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 
 @RestController
@@ -29,23 +25,32 @@ public class QnaController {
 
 
 
-    @GetMapping("qnaListAll")
-    public BaseResult<List<QnaDTO>> getQnaList() {
 
-        List<QnaDTO> modules = qnaService.QnaSelectList();
+    @GetMapping("qnaListAll")
+    public BaseResult<Qna> qnaListAll( @ApiParam(value = "페이지(1-based)", example = "1", required = true)
+                                                    @RequestParam(value = "page") Integer page,
+                                                @ApiParam(value = "한 페이지에 노출될 개수", defaultValue = "5")
+                                                    @RequestParam(value = "size", defaultValue = "5") Integer size) throws NoLtiSessionException {
+
+
+
+        Qna modules = qnaService.QnaSelectList(page,size);
+        System.out.println(modules);
 
         return BaseResultFactory.createSuccess(modules);
     }
 
-    @PostMapping("/qnaCreate")
-    public BaseResult postQna(@RequestBody ReqQna req,
-                              @ApiParam(value = "과목 코드", example = "7", required = true)
-                              @RequestParam("courseId") long courseId,
-                              @ApiParam(value = "사용자 코드", example = "1", required = true)
-                                  @RequestParam("userId") long userId){
+    @PostMapping("qnaCreate")
+    public BaseResult postQna(@RequestBody ReqQna req){
 
       if(qnaService.insertQna(req))  return BaseResultFactory.createSuccess();
       else return BaseResultFactory.createFail(ResponseCode.FAIL);
+    }
+
+    @PutMapping("qnaDelete")
+    public BaseResult putQnaDelete(@RequestBody ReqQna req){
+        System.out.println("controllerreq: "+req.getQnaNo());
+        return BaseResultFactory.createSuccess(qnaService.deleteQna(req));
     }
 
 

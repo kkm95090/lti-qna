@@ -8,10 +8,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Qna {
     private List<QnaDTO> qna;
+    private Integer cnt;
+
+
 }

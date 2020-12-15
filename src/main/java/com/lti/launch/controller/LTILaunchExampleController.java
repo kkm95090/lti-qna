@@ -6,6 +6,7 @@ import com.lti.launch.model.view.CourseModules;
 import com.lti.launch.service.QnaService;
 import edu.ksu.lti.launch.controller.LtiLaunchController;
 import edu.ksu.lti.launch.controller.OauthController;
+import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiSessionService;
@@ -59,13 +60,9 @@ public class LTILaunchExampleController extends LtiLaunchController {
 	 */
 
     @RequestMapping("/helloWorld")
-    public ModelAndView helloWorld(HttpServletRequest request
-            , @RequestParam(value="nowPage", required=false)String nowPage
-            , @RequestParam(value="cntPerPage", required=false)String cntPerPage) throws Exception {
+    public ModelAndView helloWorld(HttpServletRequest request) throws Exception {
         LOG.info("Showing Activity Reporting configuration XML");
-        LOG.info("nowPage"+nowPage);
-        LOG.info("cntPerPage"+cntPerPage);
-        String ltiLaunchUrl = OauthController.getApplicationBaseUrl(request, true) + "/launch";
+//        String ltiLaunchUrl = OauthController.getApplicationBaseUrl(request, true) + "/launch";
 //        LtiSession ltiSession = null;
 //        if (ltiSessionService == null) {
 //            ltiSession = new LtiSession();
@@ -80,11 +77,8 @@ public class LTILaunchExampleController extends LtiLaunchController {
 //        }
 //
 //        LtiLaunchData ltiLaunchData=ltiSession.getLtiLaunchData();
-
-        //CourseModules courseModules = qnaService.selectModule(Long.parseLong(ltiSession.getCanvasCourseId()));
-
-        CourseModules courseModules = qnaService.selectModule(1);
-
+//
+//        CourseModules courseModules = qnaService.selectModule(Long.parseLong(ltiSession.getCanvasCourseId()));
 
 
         ModelAndView view = new ModelAndView("qnaList");
@@ -97,8 +91,32 @@ public class LTILaunchExampleController extends LtiLaunchController {
     }
 
     @RequestMapping("/qnaList")
-    public ModelAndView qnaList() throws Exception {
+    public ModelAndView qnaList(HttpServletRequest request) throws NoLtiSessionException {
+        LtiSession ltiSession = null;
+
+            ltiSession = new LtiSession();
+            ltiSession.setCanvasCourseId("1");
+            ltiSession.setEid("1");
+
+        LtiLaunchData ltiLaunchData = new LtiLaunchData();
+        ltiLaunchData.setCustom_canvas_user_id("183");
+        ltiLaunchData.setCustom_canvas_course_id("1");
+        ltiLaunchData.setRoles("Administrator");
+
+        String roleName =  ltiLaunchData.getRoles();
+        String courseId =  ltiLaunchData.getCustom_canvas_course_id();
+        String userId =  ltiLaunchData.getCustom_canvas_user_id();
+
+
+        System.out.println(ltiLaunchData.getCustom_canvas_user_id());
+
+
+
+
         ModelAndView view = new ModelAndView("qnaList");
+        view.addObject("roleName", roleName);
+        view.addObject("courseId", courseId);
+        view.addObject("userId", userId);
         return view;
     }
     /*

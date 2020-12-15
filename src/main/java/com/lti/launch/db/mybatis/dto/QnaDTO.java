@@ -25,4 +25,6 @@ public class QnaDTO {
     private Date qna_update_date;
     private String qna_delete_YN;
     private String qna_name;
+    private Integer page;
+    private Integer size;
 }
