@@ -19,5 +19,5 @@ public class QnaReplyDTO {
     private String qna_reply_user_role;
     private Date qna_reply_insert_date;
     private Date qna_reply_update_date;
-    private String qna_delete_YN;
+    private String qna_delete_yn;
 }

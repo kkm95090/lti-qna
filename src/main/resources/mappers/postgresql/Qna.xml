@@ -48,4 +48,54 @@ select a.* ,
             , qna_update_date = #{qna_update_date}
             WHERE qna_no = #{qna_no}
         </update>
+
+        <select id="editqna" resultType="com.lti.launch.db.mybatis.dto.QnaDTO">
+            select a.* ,
+        (select b.name
+        from users b
+        where a.qna_user_id = b.id) AS qna_name
+            from board.qna AS a
+            where a.qna_no = ${qna_no}
+            order by qna_no DESC
+
+        </select>
+
+        <select id="updateQna" parameterType="com.lti.launch.db.mybatis.dto.QnaDTO" resultType="Long">
+            UPDATE board.qna
+            SET qna_title = '${qna_title}',
+            qna_contents = '${qna_contents}',
+            qna_secret = '${qna_secret}',
+            qna_update_date = '${qna_update_date}'
+            WHERE qna_no = ${qna_no}
+        </select>
+
+        <select id="insertQnaReply" parameterType="com.lti.launch.db.mybatis.dto.QnaReplyDTO" resultType="Long">
+            INSERT INTO board.qna_reply
+            (qna_no,
+            qna_reply_contents,
+            qna_reply_user_id,
+            qna_reply_user_role,
+            qna_reply_insert_date,
+            qna_reply_update_date,
+            qna_delete_yn
+            ) VALUES (
+            #{qna_no}
+            ,#{qna_reply_contents}
+            ,#{qna_reply_user_id}
+            ,#{qna_reply_user_role}
+            ,#{qna_reply_insert_date}
+            ,#{qna_reply_update_date}
+            ,'N'
+            ) returning qna_reply_no
+        </select>
+
+        <select id="qnaReplyListAll" parameterType="com.lti.launch.db.mybatis.dto.QnaReplyDTO">
+            select a.*,
+                (select b.name
+                    from users b
+                    where a.qna_reply_user_id = b.id) AS qna_reply_name
+            from board.qna_reply AS a
+            where a.qna_no = #{qna_no}
+            order by qna_reply_no DESC
+        </select>
 </mapper>

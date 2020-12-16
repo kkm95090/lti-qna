@@ -16,5 +16,5 @@ public class ReqQna {
     private String qnaContents;
     private String attachFile;
     private String secret;
-    private int qnaNo;
+    private int qna_no;
 }

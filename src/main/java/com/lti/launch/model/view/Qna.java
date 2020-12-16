@@ -1,6 +1,7 @@
 package com.lti.launch.model.view;
 
 import com.lti.launch.db.mybatis.dto.QnaDTO;
+import com.lti.launch.db.mybatis.dto.QnaReplyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.List;
 public class Qna {
     private List<QnaDTO> qna;
     private Integer cnt;
+    private List<QnaReplyDTO> qnaReply;
 
 
 }

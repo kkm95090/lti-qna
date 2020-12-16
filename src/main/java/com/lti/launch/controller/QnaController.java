@@ -5,6 +5,7 @@ import com.lti.launch.db.mybatis.dto.QnaDTO;
 import com.lti.launch.domain.BaseResult;
 import com.lti.launch.domain.BaseResultFactory;
 import com.lti.launch.model.request.ReqQna;
+import com.lti.launch.model.request.ReqQnaReply;
 import com.lti.launch.model.view.Qna;
 import com.lti.launch.service.QnaService;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
@@ -32,10 +33,7 @@ public class QnaController {
                                                 @ApiParam(value = "한 페이지에 노출될 개수", defaultValue = "5")
                                                     @RequestParam(value = "size", defaultValue = "5") Integer size) throws NoLtiSessionException {
 
-
-
         Qna modules = qnaService.QnaSelectList(page,size);
-        System.out.println(modules);
 
         return BaseResultFactory.createSuccess(modules);
     }
@@ -49,9 +47,35 @@ public class QnaController {
 
     @PutMapping("qnaDelete")
     public BaseResult putQnaDelete(@RequestBody ReqQna req){
-        System.out.println("controllerreq: "+req.getQnaNo());
         return BaseResultFactory.createSuccess(qnaService.deleteQna(req));
     }
 
+    @GetMapping("qnaEdit")
+    public BaseResult<QnaDTO> getQnaEdit(@ApiParam(value = "수정게시물", example = "1", required = true)
+    @RequestParam(value = "qna_no") Integer qna_no){
+        return BaseResultFactory.createSuccess(qnaService.editQna(qna_no));
+    }
 
+    @PostMapping("qnaUpdate")
+    public BaseResult postQnaEdit(@RequestBody ReqQna req){
+        if(qnaService.updateQna(req))  return BaseResultFactory.createSuccess();
+        else return BaseResultFactory.createFail(ResponseCode.FAIL);
+    }
+
+    @PostMapping("qnaReply")
+    public BaseResult postQnaReply(@RequestBody ReqQnaReply req){
+
+        if(qnaService.insertQnaReply(req))  return BaseResultFactory.createSuccess();
+        else return BaseResultFactory.createFail(ResponseCode.FAIL);
+    }
+
+    @GetMapping("qnaReplyListAll")
+    public BaseResult getQnaReplyList(@ApiParam(value = "리플목록", example = "1", required = true)
+                                          @RequestParam(value = "qna_no") Integer qna_no
+                                      ,@RequestBody ReqQnaReply req){
+        System.out.println("reply controller: "+qna_no);
+        Qna modules = qnaService.QnaReplySelect(qna_no);
+
+        return BaseResultFactory.createSuccess(modules);
+    }
 }

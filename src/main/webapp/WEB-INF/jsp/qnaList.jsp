@@ -43,14 +43,14 @@
         <ul class="qna-list" uk-accordion="multiple: true" v-for="(qna, index) in qnaModules">
             <li>
 
-                <a class="uk-accordion-title" href="#">
+                <a class="uk-accordion-title" @click="getQnaReplyList(qna.qna_no)">
                     <span class="user-profile"><img src="../img/component.png" alt=""></span>
                     &nbsp;&nbsp;{{qna.qna_title}}
                     <p>{{qna.qna_name}}</p>
                 </a>
                 <div class="uk-accordion-content">
                     <div v-if="qna.qna_user_id == userId " class="amend-delete">
-                        <a class="amend-btn" uk-icon="pencil" @click="getEdit(qna.qna_no)"></a>
+                        <a class="amend-btn" uk-icon="pencil" @click="getEditQnaModal(qna.qna_no, $event)"></a>
                         <a class="delete-btn" uk-icon="trash" @click="putQnaDelete(qna.qna_no)"></a>
                     </div>
                     <div class="question-content">
@@ -63,11 +63,11 @@
 <%--                        </div>--%>
                     </div>
                     <div class="comment-wrap">
-                        <input type="text" placeholder="답변작성" />
-                        <button>게시</button>
+                        <input type="text" placeholder="답변작성" v-model="newQnareply" />
+                        <button type="button" @click="postReply(qna.qna_no)">게시</button>
                     </div>
                     <div class="comment-list">
-                        <div class="comment-box">
+                        <div class="comment-box"  >
 
 									<span class="user-profile">
 										<span class="profile-img"><img src="../img/component2.png" alt=""></span><br/>
@@ -77,7 +77,6 @@
                             <span class="commnet-text">
 										<span>
 											공지사항에 링크있습니다. 확인해보세요<br/>
-											아안 안아 낭 ㅏㄴㅇ ㅏㄴ아 나아
 										</span>
 									</span>
                         </div>
@@ -101,13 +100,6 @@
                 <a type="button" v-on:click="getQnaList(page+1)"><span uk-pagination-next></span></a>
             </li>
         </ul>
-        <ul>
-            <li>
-                <input type="text" v-model="courseId">
-                <input type="text" v-model="userId">
-                <input type="text" v-model="roleName">
-            </li>
-        </ul>
     </div>
     <%@include file="qnaCreate.jsp"%>
 </div>
@@ -129,12 +121,14 @@
                 qnaContents: '',
                 qnaSecret:'',
             },
+            selectedModulesPosition : -1,
             qnaNo:0,
             page:1,
             size:5,
             pageCnt:1,
-            cnt:0
-
+            cnt:0,
+            newQnareply:'',
+            qnaReplys:[]
         },
         created(){
           this.qnaList();
@@ -167,6 +161,10 @@
             qnaWriteModal(){
                console.log("글쓰기 modal");
                 var modal = UIkit.modal("#quesrion-write-modal");
+                this.newQna.qnaTitle = '';
+                this.newQna.qnaContents = '';
+                this.newQna.qnaSecret = '';
+                $('.uk-modal-title').text('질문 등록');
                 modal.show();
             },
             createQna(){
@@ -246,7 +244,87 @@
                 var linkPath = this.canvasUrl + "/courses/" + this.selectedCourseId+"/external_tools/"+this.ltiId;
                 top.location= linkPath;
             },
+            getEditQnaModal(id, evt){
+                evt.stopPropagation();
+                this.selectedModulesPosition =id;
+                console.log(id)
+                console.log(this.selectedModulesPosition)
+                this.newQna.qnaTitle = this.qnaModules.qnaTitle;
+                this.newQna.qnaContents = this.qnaModules.qnaContents;
+                axios.get(this.baseUrl+'/api/qnaEdit',{
+                    params:{qna_no:id}
+                }).then(res => {
+                    console.log("질문불러오기 !"+res.data.qna_title);
+                    $('.uk-modal-title').text('질문 수정');
+                    var modal = UIkit.modal("#quesrion-write-modal");
+                    modal.show();
+                    this.newQna.qnaTitle = res.data.qna_title;
+                    this.newQna.qnaContents = res.data.qna_contents;
+                    console.log(res.data.qna_secret);
 
+                    this.newQna.qnaSecret = res.data.qna_secret;
+
+                })
+            },
+            postEditQna(){
+                console.log("질문등록");
+                if (this.isEmpty(this.newQna.qnaTitle)) {
+                    UIkit.notification("Qna 제목은 필수 입니다.");
+                }else if (this.isEmpty(this.newQna.qnaContents)) {
+                    UIkit.notification("Qna 내용은 필수 입니다.");
+                } else {
+                    console.log("수정 시작")
+                    axios.post(this.baseUrl+'/api/qnaUpdate',{
+                        qnaTitle : this.newQna.qnaTitle,
+                        qnaContents: this.newQna.qnaContents,
+                        secret: this.newQna.qnaSecret,
+                        courseId: this.courseId,
+                        userId: this.userId,
+                        qna_no : this.selectedModulesPosition
+                    }).then(res => {
+                        console.log("수정 성공!"+res.data);
+
+                        var modal = UIkit.modal("#quesrion-write-modal");
+                        modal.hide();
+
+                        this.qnaList();
+
+                    })
+
+                }
+            },
+            postReply(id){
+                this.selectedModulesPosition = id;
+                if (this.isEmpty(this.newQnareply)) {
+                    UIkit.notification("댓글을 작성해주세요.");
+                }else{
+                    console.log("댓글게시 시작!")
+                    axios.post(this.baseUrl+'/api/qnaReply',{
+                        qnaReplyContents : this.newQnareply,
+                        replyUserId: this.userId,
+                        qnaNo : this.selectedModulesPosition
+                    }).then(res => {
+                        console.log("댓글게시 성공!"+res.data);
+
+                        this.qnaList();
+
+                    })
+                }
+            },
+            getQnaReplyList(id){
+                this.selectedModulesPosition = id;
+                console.log(this.selectedModulesPosition);
+                console.log(id);
+                axios.get(this.baseUrl + '/api/qnaReplyListAll', {
+                    params:{qna_no:id}
+                }).then(res => {
+                    console.log(res.data.qnaReply);
+                    this.qnaReplys = res.data.qnaReply;
+
+
+
+                })
+            },
             isEmpty(value){
                 // debug('value', value)
                 // debug('typeof value', typeof value)

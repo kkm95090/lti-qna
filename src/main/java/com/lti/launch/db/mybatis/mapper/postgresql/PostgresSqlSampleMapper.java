@@ -1,10 +1,9 @@
 package com.lti.launch.db.mybatis.mapper.postgresql;
 
 import com.lti.launch.db.mybatis.dto.*;
-import com.lti.launch.model.request.ReqQna;
+import com.lti.launch.model.request.ReqQnaReply;
 import org.apache.ibatis.annotations.Param;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -30,4 +29,12 @@ public interface PostgresSqlSampleMapper {
     public Long insertQna(QnaDTO dto);
 
     public void deleteqna(QnaDTO dto);
+
+    public QnaDTO editqna(@Param("qna_no") Integer qna_no);
+
+    public Long updateQna(QnaDTO dto);
+
+    public Long insertQnaReply(QnaReplyDTO dto);
+
+    public List<QnaReplyDTO> qnaReplyListAll(@Param("qna_no") Integer qna_no);
 }
