@@ -89,7 +89,7 @@ select a.* ,
             ) returning qna_reply_no
         </select>
 
-        <select id="qnaReplyListAll" parameterType="com.lti.launch.db.mybatis.dto.QnaReplyDTO">
+        <select id="qnaReplyListAll" resultType="com.lti.launch.db.mybatis.dto.QnaReplyDTO">
             select a.*,
                 (select b.name
                     from users b

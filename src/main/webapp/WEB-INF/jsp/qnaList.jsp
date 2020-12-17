@@ -66,21 +66,22 @@
                         <input type="text" placeholder="답변작성" v-model="newQnareply" />
                         <button type="button" @click="postReply(qna.qna_no)">게시</button>
                     </div>
-                    <div class="comment-list">
-                        <div class="comment-box"  >
+                    <div class="comment-list" v-if="qnaReplys.length > 0">
+                        <div class="comment-box"  v-for="(rep, index) in qnaReplys">
 
-									<span class="user-profile">
-										<span class="profile-img"><img src="../img/component2.png" alt=""></span><br/>
-										<span class="id-level">홍길동 교수(리플 작성자)</span>
-									</span>
+                                    <span class="user-profile">
+                                        <span class="profile-img"><img src="../img/component2.png" alt=""></span><br/>
+                                        <span class="id-level">{{rep.qna_reply_name}}</span>
+                                    </span>
 
-                            <span class="commnet-text">
-										<span>
-											공지사항에 링크있습니다. 확인해보세요<br/>
-										</span>
-									</span>
+                                    <span class="commnet-text">
+                                        <span>
+                                            {{rep.qna_reply_contents}}
+                                        </span>
+                                    </span>
                         </div>
-                        <div  class="comment-amend">
+                        <div  class="comment-amend" v-if="qnaReplys.qna_reply_user_id == userId">
+                            <input type="text" v-model="userId"/>
                             <a class="amend-btn" uk-icon="pencil" href="#"></a>
                             <a class="delete-btn" uk-icon="trash" href="#"></a>
                         </div>

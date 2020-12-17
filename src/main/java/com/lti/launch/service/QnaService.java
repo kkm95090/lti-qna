@@ -153,10 +153,8 @@ public class QnaService {
     }
 
     public QnaDTO editQna(Integer qna_no) {
-        System.out.println("service: "+qna_no);
 
         QnaDTO resResult = postgresSqlSampleMapper.editqna(qna_no);
-        System.out.println("result:  "+resResult);
         return resResult;
     }
 
@@ -221,9 +219,9 @@ public class QnaService {
     }
 
     public Qna QnaReplySelect(Integer qna_no) {
-        List<QnaReplyDTO>  qnareplylist = postgresSqlSampleMapper.qnaReplyListAll(qna_no);
+        //List<QnaReplyDTO>  qnareplylist = postgresSqlSampleMapper.qnaReplyListAll(qna_no);
         Qna qnaReplyListAll = new Qna();
-        qnaReplyListAll.setQnaReply(qnareplylist);
+        qnaReplyListAll.setQnaReply(postgresSqlSampleMapper.qnaReplyListAll(qna_no));
 
         return qnaReplyListAll;
     }

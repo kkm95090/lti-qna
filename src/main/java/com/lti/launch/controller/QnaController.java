@@ -70,10 +70,9 @@ public class QnaController {
     }
 
     @GetMapping("qnaReplyListAll")
-    public BaseResult getQnaReplyList(@ApiParam(value = "리플목록", example = "1", required = true)
+    public BaseResult<Qna> getQnaReplyList(@ApiParam(value = "리플목록", example = "1", required = true)
                                           @RequestParam(value = "qna_no") Integer qna_no
-                                      ,@RequestBody ReqQnaReply req){
-        System.out.println("reply controller: "+qna_no);
+                                      ){
         Qna modules = qnaService.QnaReplySelect(qna_no);
 
         return BaseResultFactory.createSuccess(modules);

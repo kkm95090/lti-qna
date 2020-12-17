@@ -20,4 +20,5 @@ public class QnaReplyDTO {
     private Date qna_reply_insert_date;
     private Date qna_reply_update_date;
     private String qna_delete_yn;
+    private String qna_reply_name;
 }
