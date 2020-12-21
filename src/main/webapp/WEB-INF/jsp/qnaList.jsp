@@ -27,23 +27,24 @@
 <div id="QnA">
     <div class="wrapper">
         <div class="qna-top">
-            <select name="" id="search" >
-                <option value="">검색조건</option>
-                <option value="title">제목</option>
-                <option value="contents">내용</option>
-                <option value="user">작성자</option>
-            </select>
+<%--            <select name="" id="search" v-model="searchcate">--%>
+<%--                <option value="">검색조건</option>--%>
+<%--                <option value="title">제목</option>--%>
+<%--                <option value="contents">내용</option>--%>
+<%--                <option value="user">작성자</option>--%>
+<%--            </select>--%>
 
             <button class="write-btn" type="button" @click="qnaWriteModal">+ 글쓰기</button>
 
         </div>
 
         <div class="qna-search">
-            <input type="search" placeholder="검색어입력" />
+            <input type="search" placeholder="검색어입력" v-model="searchname"/>
             <button class="search-btn"><span class="uk-margin-small-right" uk-icon="search" ></span></button>
         </div>
 
-        <ul class="qna-list" uk-accordion="multiple: true" v-for="(qna, index) in qnaModules">
+        <ul class="qna-list" uk-accordion="multiple: true" v-for="(qna, index) in qnaModules"
+            v-if="qna.qna_title.includes(searchname)||qna.qna_contents.includes(searchname)||qna.qna_name.includes(searchname)">
             <li>
 
                 <a class="uk-accordion-title" >
@@ -131,7 +132,8 @@
             pageCnt:1,
             cnt:0,
             newQnareply:'',
-            qnaReplys:[]
+            qnaReplys:[],
+            searchname:''
         },
         created(){
           this.qnaList();
@@ -206,7 +208,8 @@
                     axios.get(this.baseUrl + '/api/qnaListAll', {
                         params:{
                             page: this.page,
-                            size: this.size
+                            size: this.size,
+                            searchname: this.searchname
                         }
                     }).then(res => {
                         this.qnaModules = res.data.qna;
