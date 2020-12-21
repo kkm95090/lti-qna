@@ -34,7 +34,6 @@ public class QnaController {
                                                     @RequestParam(value = "size", defaultValue = "5") Integer size) throws NoLtiSessionException {
 
         Qna modules = qnaService.QnaSelectList(page,size);
-
         return BaseResultFactory.createSuccess(modules);
     }
 
@@ -69,12 +68,12 @@ public class QnaController {
         else return BaseResultFactory.createFail(ResponseCode.FAIL);
     }
 
-    @GetMapping("qnaReplyListAll")
-    public BaseResult<Qna> getQnaReplyList(@ApiParam(value = "리플목록", example = "1", required = true)
-                                          @RequestParam(value = "qna_no") Integer qna_no
-                                      ){
-        Qna modules = qnaService.QnaReplySelect(qna_no);
-
-        return BaseResultFactory.createSuccess(modules);
-    }
+//    @GetMapping("qnaReplyListAll")
+//    public BaseResult<Qna> getQnaReplyList(@ApiParam(value = "리플목록", example = "1", required = true)
+//                                          @RequestParam(value = "qna_no") Integer qna_no
+//                                      ){
+//        Qna modules = qnaService.QnaReplySelect(qna_no);
+//
+//        return BaseResultFactory.createSuccess(modules);
+//    }
 }

@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Data
@@ -17,7 +19,9 @@ import java.util.List;
 public class Qna {
     private List<QnaDTO> qna;
     private Integer cnt;
-    private List<QnaReplyDTO> qnaReply;
+    private HashMap<Integer, List<QnaReplyDTO>> qnaReply;
 
 
+    public void setQnaReply(Integer qnalistCnt, Map<Integer, Object> qnaReplyMap) {
+    }
 }

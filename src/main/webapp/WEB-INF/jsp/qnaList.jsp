@@ -29,6 +29,9 @@
         <div class="qna-top">
             <select name="" id="search" >
                 <option value="">검색조건</option>
+                <option value="title">제목</option>
+                <option value="contents">내용</option>
+                <option value="user">작성자</option>
             </select>
 
             <button class="write-btn" type="button" @click="qnaWriteModal">+ 글쓰기</button>
@@ -37,13 +40,13 @@
 
         <div class="qna-search">
             <input type="search" placeholder="검색어입력" />
-            <button class="search-btn"><span class="uk-margin-small-right" uk-icon="search"></span></button>
+            <button class="search-btn"><span class="uk-margin-small-right" uk-icon="search" ></span></button>
         </div>
 
         <ul class="qna-list" uk-accordion="multiple: true" v-for="(qna, index) in qnaModules">
             <li>
 
-                <a class="uk-accordion-title" @click="getQnaReplyList(qna.qna_no)">
+                <a class="uk-accordion-title" >
                     <span class="user-profile"><img src="../img/component.png" alt=""></span>
                     &nbsp;&nbsp;{{qna.qna_title}}
                     <p>{{qna.qna_name}}</p>
@@ -66,8 +69,8 @@
                         <input type="text" placeholder="답변작성" v-model="newQnareply" />
                         <button type="button" @click="postReply(qna.qna_no)">게시</button>
                     </div>
-                    <div class="comment-list" v-if="qnaReplys.length > 0">
-                        <div class="comment-box"  v-for="(rep, index) in qnaReplys">
+                    <div class="comment-list" v-for="(rep, index) in qna.qnaReplyDTOList">
+                        <div class="comment-box" >
 
                                     <span class="user-profile">
                                         <span class="profile-img"><img src="../img/component2.png" alt=""></span><br/>
@@ -80,8 +83,7 @@
                                         </span>
                                     </span>
                         </div>
-                        <div  class="comment-amend" v-if="qnaReplys.qna_reply_user_id == userId">
-                            <input type="text" v-model="userId"/>
+                        <div  class="comment-amend" v-if="rep.qna_reply_user_id == userId">
                             <a class="amend-btn" uk-icon="pencil" href="#"></a>
                             <a class="delete-btn" uk-icon="trash" href="#"></a>
                         </div>
@@ -145,6 +147,7 @@
                 }).then(res => {
                     this.cnt = res.data.cnt
                     this.qnaModules = res.data.qna;
+                    console.log(res.data.qna);
                     if (this.cnt > 0) {
                         this.pageCnt = this.cnt / this.size;
                         if ((this.cnt % this.size) > 0) {
@@ -219,6 +222,7 @@
                             this.pageCnt = 1;
                             this.cnt = 0
                         }
+
 
                     })
                 }
@@ -312,20 +316,20 @@
                     })
                 }
             },
-            getQnaReplyList(id){
-                this.selectedModulesPosition = id;
-                console.log(this.selectedModulesPosition);
-                console.log(id);
-                axios.get(this.baseUrl + '/api/qnaReplyListAll', {
-                    params:{qna_no:id}
-                }).then(res => {
-                    console.log(res.data.qnaReply);
-                    this.qnaReplys = res.data.qnaReply;
-
-
-
-                })
-            },
+            // getQnaReplyList(id){
+            //     this.selectedModulesPosition = id;
+            //     console.log(this.selectedModulesPosition);
+            //     console.log(id);
+            //     axios.get(this.baseUrl + '/api/qnaReplyListAll', {
+            //         params:{qna_no:id}
+            //     }).then(res => {
+            //         console.log(res.data.qnaReply);
+            //         this.qnaReplys = res.data.qnaReply;
+            //
+            //
+            //
+            //     })
+            // },
             isEmpty(value){
                 // debug('value', value)
                 // debug('typeof value', typeof value)

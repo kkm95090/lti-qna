@@ -81,16 +81,17 @@ public class QnaService {
         List<QnaDTO>  qnalist = postgresSqlSampleMapper.qnaListAll(size.intValue()
                 , size.intValue() * (page.intValue()-1));
         Qna qnaListAll = new Qna();
+        for(QnaDTO qna : qnalist){
+            List<QnaReplyDTO> replys = new ArrayList<>();
+            replys = postgresSqlSampleMapper.qnaReplyListAll(qna.getQna_no());
+
+            qna.setQnaReplyDTOList(replys);
+        }
+
         qnaListAll.setCnt(qnalistCnt);
         qnaListAll.setQna(qnalist);
-
             return qnaListAll;
-    };
-
-//    public int qnaTotalCount() {
-//       return postgresSqlSampleMapper.qnaTotalCount();
-//    };
-
+    }
 
     public boolean insertQna(ReqQna req){
         boolean retVal = true;
@@ -218,11 +219,11 @@ public class QnaService {
         return retVal;
     }
 
-    public Qna QnaReplySelect(Integer qna_no) {
-        //List<QnaReplyDTO>  qnareplylist = postgresSqlSampleMapper.qnaReplyListAll(qna_no);
-        Qna qnaReplyListAll = new Qna();
-        qnaReplyListAll.setQnaReply(postgresSqlSampleMapper.qnaReplyListAll(qna_no));
-
-        return qnaReplyListAll;
-    }
+//    public Qna QnaReplySelect(Integer qna_no) {
+//        //List<QnaReplyDTO>  qnareplylist = postgresSqlSampleMapper.qnaReplyListAll(qna_no);
+//        Qna qnaReplyListAll = new Qna();
+//        qnaReplyListAll.setQnaReply(postgresSqlSampleMapper.qnaReplyListAll(qna_no));
+//
+//        return qnaReplyListAll;
+//    }
 }

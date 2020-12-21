@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Data               //모든 private 필드에 대한 Getter,Setter,ToString, EqualsAndHashCode 오버라이드, RequiredArgsConstructor(필수파라미터 생성자)
@@ -27,4 +28,5 @@ public class QnaDTO {
     private String qna_name;
     private Integer page;
     private Integer size;
+    private List<QnaReplyDTO> qnaReplyDTOList;
 }
