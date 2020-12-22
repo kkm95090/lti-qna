@@ -2,6 +2,7 @@ package com.lti.launch.controller;
 
 import com.lti.launch.common.ResponseCode;
 import com.lti.launch.db.mybatis.dto.QnaDTO;
+import com.lti.launch.db.mybatis.dto.QnaReplyDTO;
 import com.lti.launch.domain.BaseResult;
 import com.lti.launch.domain.BaseResultFactory;
 import com.lti.launch.model.request.ReqQna;
@@ -65,6 +66,23 @@ public class QnaController {
     public BaseResult postQnaReply(@RequestBody ReqQnaReply req){
 
         if(qnaService.insertQnaReply(req))  return BaseResultFactory.createSuccess();
+        else return BaseResultFactory.createFail(ResponseCode.FAIL);
+    }
+
+    @PutMapping("replyDelete")
+    public BaseResult putReplyDel(@RequestBody ReqQnaReply reqQnaReply){
+        return BaseResultFactory.createSuccess(qnaService.deleteReply(reqQnaReply));
+    }
+
+    @GetMapping("qnaReplyEdit")
+    public BaseResult<QnaReplyDTO> getQnaReplyEdit(@ApiParam(value = "수정댓", example = "1", required = true)
+                                                       @RequestParam(value = "qna_reply_no") Integer qna_reply_no){
+        return BaseResultFactory.createSuccess(qnaService.editQnaReply(qna_reply_no));
+    }
+
+    @PostMapping("qnaReplyUpdate")
+    public BaseResult postQnaReplyUpdate(@RequestBody ReqQnaReply req){
+        if(qnaService.updateQnaReply(req))  return BaseResultFactory.createSuccess();
         else return BaseResultFactory.createFail(ResponseCode.FAIL);
     }
 

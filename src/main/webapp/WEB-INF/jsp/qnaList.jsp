@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js"></script>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="../css/uikit.css">
     <link rel="stylesheet" href="../css/uikit-rtl.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
@@ -27,12 +27,6 @@
 <div id="QnA">
     <div class="wrapper">
         <div class="qna-top">
-<%--            <select name="" id="search" v-model="searchcate">--%>
-<%--                <option value="">검색조건</option>--%>
-<%--                <option value="title">제목</option>--%>
-<%--                <option value="contents">내용</option>--%>
-<%--                <option value="user">작성자</option>--%>
-<%--            </select>--%>
 
             <button class="write-btn" type="button" @click="qnaWriteModal">+ 글쓰기</button>
 
@@ -72,21 +66,19 @@
                     </div>
                     <div class="comment-list" v-for="(rep, index) in qna.qnaReplyDTOList">
                         <div class="comment-box" >
-
-                                    <span class="user-profile">
-                                        <span class="profile-img"><img src="../img/component2.png" alt=""></span><br/>
-                                        <span class="id-level">{{rep.qna_reply_name}}</span>
-                                    </span>
-
-                                    <span class="commnet-text">
-                                        <span>
-                                            {{rep.qna_reply_contents}}
-                                        </span>
-                                    </span>
+                            <span class="user-profile">
+                                <span class="profile-img"><img src="../img/component2.png" alt=""></span><br/>
+                                <span class="id-level">{{rep.qna_reply_name}}</span>
+                            </span>
+                            <span class="commnet-text">
+                                <span>
+                                    {{rep.qna_reply_contents}}
+                                </span>
+                            </span>
                         </div>
                         <div  class="comment-amend" v-if="rep.qna_reply_user_id == userId">
-                            <a class="amend-btn" uk-icon="pencil" href="#"></a>
-                            <a class="delete-btn" uk-icon="trash" href="#"></a>
+                            <a class="amend-btn" uk-icon="pencil" @click="getReplyEdit(rep.qna_reply_no)"></a>
+                            <a class="delete-btn" uk-icon="trash" @click="putReplyDelete(rep.qna_reply_no)"></a>
                         </div>
                     </div>
                 </div>
@@ -106,6 +98,7 @@
         </ul>
     </div>
     <%@include file="qnaCreate.jsp"%>
+    <%@include file="qnaReplyEdit.jsp"%>
 </div>
 
 </body>
@@ -132,8 +125,9 @@
             pageCnt:1,
             cnt:0,
             newQnareply:'',
-            qnaReplys:[],
-            searchname:''
+            searchname:'',
+            qnaReplyNo:0,
+            qnaReplyContents:''
         },
         created(){
           this.qnaList();
@@ -319,20 +313,54 @@
                     })
                 }
             },
-            // getQnaReplyList(id){
-            //     this.selectedModulesPosition = id;
-            //     console.log(this.selectedModulesPosition);
-            //     console.log(id);
-            //     axios.get(this.baseUrl + '/api/qnaReplyListAll', {
-            //         params:{qna_no:id}
-            //     }).then(res => {
-            //         console.log(res.data.qnaReply);
-            //         this.qnaReplys = res.data.qnaReply;
-            //
-            //
-            //
-            //     })
-            // },
+            getReplyEdit(id){
+                this.selectReplyPosition = id;
+                axios.get(this.baseUrl+'/api/qnaReplyEdit',{
+                    params:{qna_reply_no:id}
+                }).then(res => {
+                    $('.uk-modal-title').text('댓글 수정');
+                    var modal = UIkit.modal("#quesrion-reply-modal");
+                    modal.show();
+                    console.log(res.data);
+                    this.qnaReplyContents = res.data.qna_reply_contents;
+
+
+                })
+            },
+            postEditQnaReply(){
+                axios.post(this.baseUrl+'/api/qnaReplyUpdate',{
+                    qnaReplyContents: this.qnaReplyContents,
+                    replyUserId: this.userId,
+                    qnaReplyNo : this.selectReplyPosition
+                }).then(res => {
+                    console.log("수정 성공!"+res.data);
+
+                    var modal = UIkit.modal("#quesrion-reply-modal");
+                    modal.hide();
+
+                    this.getQnaList(1);
+
+                })
+            },
+            putReplyDelete(id){
+
+                console.log(id);
+                if(confirm('삭제하시겠습니까??')) {
+                    console.log(id);
+                    this.qnaReplyNo=id;
+                    console.log(this.qnaReplyNo);
+                    axios.put(this.baseUrl+ '/api/replyDelete', {
+                        qnaReplyNo: this.qnaReplyNo
+                    }).then(res => {
+                        console.log(res.data);
+                        this.getQnaList(1);
+                    })
+                        .catch(error => {
+                            console.log(error.response)
+                        });
+
+                }
+            },
             isEmpty(value){
                 // debug('value', value)
                 // debug('typeof value', typeof value)

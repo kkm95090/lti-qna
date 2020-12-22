@@ -37,4 +37,10 @@ public interface PostgresSqlSampleMapper {
     public Long insertQnaReply(QnaReplyDTO dto);
 
     public List<QnaReplyDTO> qnaReplyListAll(@Param("qna_no") int qna_no);
+
+    public void deleteReply(QnaReplyDTO dto);
+
+    public QnaReplyDTO editqnaReply(@Param("qna_reply_no") Integer qna_reply_no);
+
+    public void updateQnaReply(QnaReplyDTO dto);
 }

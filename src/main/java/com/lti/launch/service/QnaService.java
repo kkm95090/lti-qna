@@ -219,6 +219,48 @@ public class QnaService {
         return retVal;
     }
 
+    public Object deleteReply(ReqQnaReply reqQnaReply) {
+        boolean retVal = true;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String today = null;
+        today = formatter.format(cal.getTime());
+        Timestamp ts = Timestamp.valueOf(today);
+
+        QnaReplyDTO dto = QnaReplyDTO.builder()
+                .qna_reply_no(reqQnaReply.getQnaReplyNo())
+                .qna_reply_update_date(ts)
+                .build();
+        postgresSqlSampleMapper.deleteReply(dto);
+
+        return retVal;
+    }
+
+    public QnaReplyDTO editQnaReply(Integer qna_reply_no) {
+        QnaReplyDTO resResult = postgresSqlSampleMapper.editqnaReply(qna_reply_no);
+        return resResult;
+    }
+
+    public boolean updateQnaReply(ReqQnaReply req) {
+        boolean retVal = true;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String today = null;
+        today = formatter.format(cal.getTime());
+        Timestamp ts = Timestamp.valueOf(today);
+
+        QnaReplyDTO dto = QnaReplyDTO.builder()
+                .qna_reply_no(req.getQnaReplyNo())
+                .qna_reply_contents(req.getQnaReplyContents())
+                .qna_reply_update_date(ts)
+                .build();
+        postgresSqlSampleMapper.updateQnaReply(dto);
+
+        return retVal;
+    }
+
 //    public Qna QnaReplySelect(Integer qna_no) {
 //        //List<QnaReplyDTO>  qnareplylist = postgresSqlSampleMapper.qnaReplyListAll(qna_no);
 //        Qna qnaReplyListAll = new Qna();
