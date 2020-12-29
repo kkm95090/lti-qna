@@ -61,7 +61,7 @@
 <%--                        </div>--%>
                     </div>
                     <div class="comment-wrap">
-                        <input type="text" placeholder="답변작성" v-model="newQnareply" />
+                        <input class="reply" type="text" placeholder="답변작성" v-model="newQnareply" />
                         <button type="button" @click="postReply(qna.qna_no)">게시</button>
                     </div>
                     <div class="comment-list" v-for="(rep, index) in qna.qnaReplyDTOList">
@@ -165,6 +165,8 @@
                 this.newQna.qnaContents = '';
                 this.newQna.qnaSecret = '';
                 $('.uk-modal-title').text('질문 등록');
+                $('.create').show();
+                $('.edit').hide();
                 modal.show();
             },
             createQna(){
@@ -187,7 +189,7 @@
                         var modal = UIkit.modal("#quesrion-write-modal");
                         modal.hide();
 
-                        this.qnaList();
+                        this.getQnaList(1);
 
                     })
 
@@ -258,6 +260,8 @@
                 }).then(res => {
                     console.log("질문불러오기 !"+res.data.qna_title);
                     $('.uk-modal-title').text('질문 수정');
+                    $('.create').hide();
+                    $('.edit').show();
                     var modal = UIkit.modal("#quesrion-write-modal");
                     modal.show();
                     this.newQna.qnaTitle = res.data.qna_title;
@@ -269,7 +273,7 @@
                 })
             },
             postEditQna(){
-                console.log("질문등록");
+                console.log("질문수정");
                 if (this.isEmpty(this.newQna.qnaTitle)) {
                     UIkit.notification("Qna 제목은 필수 입니다.");
                 }else if (this.isEmpty(this.newQna.qnaContents)) {
@@ -289,7 +293,7 @@
                         var modal = UIkit.modal("#quesrion-write-modal");
                         modal.hide();
 
-                        this.qnaList();
+                        this.getQnaList(1);
 
                     })
 
@@ -307,8 +311,8 @@
                         qnaNo : this.selectedModulesPosition
                     }).then(res => {
                         console.log("댓글게시 성공!"+res.data);
-
-                        this.qnaList();
+                        this.newQnareply = '';
+                        this.getQnaList(1);
 
                     })
                 }

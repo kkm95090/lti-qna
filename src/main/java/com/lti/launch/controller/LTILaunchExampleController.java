@@ -9,6 +9,7 @@ import edu.ksu.lti.launch.controller.OauthController;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
+import edu.ksu.lti.launch.security.CanvasInstanceChecker;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -31,6 +35,9 @@ public class LTILaunchExampleController extends LtiLaunchController {
 
     @Autowired
     public LtiSessionService ltiSessionService;
+
+    @Autowired
+    private CanvasInstanceChecker instanceChecker;
 
     @Autowired
     public QnaService qnaService;
@@ -91,17 +98,32 @@ public class LTILaunchExampleController extends LtiLaunchController {
     }
 
     @RequestMapping("/qnaList")
-    public ModelAndView qnaList(HttpServletRequest request) throws NoLtiSessionException {
+    public ModelAndView qnaList(LtiLaunchData ltiData, HttpSession session) throws NoLtiSessionException {
         LtiSession ltiSession = null;
+        session.invalidate();
+        String canvasCourseId = ltiData.getCustom_canvas_course_id();
+        String eID = ltiData.getCustom_canvas_user_login_id();
+        LtiSession ltiSession1 = new LtiSession();
+        ltiSession1.setApplicationName(getApplicationName());
+        ltiSession1.setInitialViewPath(getInitialViewPath());
+        ltiSession1.setEid(eID);
+        ltiSession1.setCanvasCourseId(canvasCourseId);
+        ltiSession1.setCanvasDomain(ltiData.getCustom_canvas_api_domain());
+        ltiSession1.setLtiLaunchData(ltiData);
+
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession newSession = sra.getRequest().getSession();
+        newSession.setAttribute(LtiSession.class.getName(), ltiSession);
+        instanceChecker.assertValidInstance(ltiSession);
 
             ltiSession = new LtiSession();
             ltiSession.setCanvasCourseId("1");
             ltiSession.setEid("1");
 
         LtiLaunchData ltiLaunchData = new LtiLaunchData();
-        ltiLaunchData.setCustom_canvas_user_id("183");
-        ltiLaunchData.setCustom_canvas_course_id("1");
-        ltiLaunchData.setRoles("Administrator");
+        ltiLaunchData.setCustom_canvas_user_id(eID);
+        ltiLaunchData.setCustom_canvas_course_id(canvasCourseId);
+        ltiLaunchData.getRoles();
 
         String roleName =  ltiLaunchData.getRoles();
         String courseId =  ltiLaunchData.getCustom_canvas_course_id();

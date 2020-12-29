@@ -18,7 +18,8 @@
             </div>
         </div>
         <div class="uk-modal-footer uk-text-right">
-            <button class="uk-button uk-button-primary" @click="postEditQna()" type="button">저장</button>
+            <button class="uk-button uk-button-primary create" @click="createQna()" type="button">저장</button>
+            <button class="uk-button uk-button-primary edit" @click="postEditQna()" type="button">저장</button>
             <button class="uk-button uk-button-default uk-modal-close" type="button">취소</button>
         </div>
     </div>
